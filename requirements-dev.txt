@@ -1,0 +1,17 @@
+# Development dependencies for MfaText
+# Install with: pip install -r requirements-dev.txt
+
+# Include base requirements
+-r requirements.txt
+
+# Build tools
+setuptools>=61.0
+wheel
+
+# Note: System dependencies required (install via package manager):
+# - Python 3.8+
+# - GTK 4 development libraries (libgtk-4-dev / gtk4-devel)
+# - LibAdwaita development libraries (libadwaita-1-dev / libadwaita-devel)
+# - GtkSourceView 5 development libraries (libgtksourceview-5-dev / gtksourceview5-devel)
+# - PyGObject and introspection bindings
+

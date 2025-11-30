@@ -1,6 +1,7 @@
 include README.md
-include function_reference.md
 include LICENSE
+include requirements*.txt
+recursive-include docs *.md
 include pyproject.toml
 include setup.py
 recursive-include data *.desktop *.metainfo.xml

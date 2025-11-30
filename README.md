@@ -24,11 +24,24 @@ cd mfatext
 pip install .
 ```
 
+### Using Requirements Files
+
+Alternatively, you can install dependencies using requirements files:
+
+```bash
+# Install runtime dependencies (includes GtkSourceView 5 for syntax highlighting)
+pip install -r requirements.txt
+
+# Install for development (includes all dependencies and build tools)
+pip install -r requirements-dev.txt
+```
+
 ### As a Library
 
 The text editor can be used as a library in your PyGObject applications:
 
 ```python
+from pathlib import Path
 from mfatext import MfaTextApplication, MfaTextWindow
 
 # Create application
@@ -38,6 +51,8 @@ app = MfaTextApplication()
 window = app.create_window(file_path=Path("example.txt"))
 window.present()
 ```
+
+For detailed integration instructions and examples, see the [Integration Guide](docs/INTEGRATION_GUIDE.md).
 
 ## Usage
 
@@ -102,11 +117,23 @@ makepkg -si
 
 ### Requirements
 
+**System Dependencies:**
 - Python 3.8+
+- GTK 4 development libraries
+- LibAdwaita development libraries
+- GtkSourceView 5 development libraries
+- PyGObject and introspection bindings
+
+**Python Dependencies:**
+
+Install development dependencies:
+```bash
+pip install -r requirements-dev.txt
+```
+
+Or manually:
 - PyGObject 3.42.0+
-- GTK 4
-- LibAdwaita
-- GtkSourceView 5 (optional, for syntax highlighting)
+- gtksourceview5 (required - provides the text editor component)
 
 ### Project Structure
 
@@ -143,7 +170,8 @@ This separation makes the code easy to read, expand, maintain, package, and redi
 
 ## Documentation
 
-See [function_reference.md](function_reference.md) for complete API documentation.
+- [Integration Guide](docs/INTEGRATION_GUIDE.md) - Complete guide for using MfaText in your application
+- [Function Reference](docs/function_reference.md) - Complete API documentation
 
 ## License
 

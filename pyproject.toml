@@ -22,10 +22,8 @@ classifiers = [
 ]
 dependencies = [
     "PyGObject>=3.42.0",
+    "gtksourceview5",
 ]
-
-[project.optional-dependencies]
-syntax = ["gtksourceview5"]
 
 [project.scripts]
 mfatext = "mfatext.main:main"

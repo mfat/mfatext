@@ -21,12 +21,8 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "PyGObject>=3.42.0",
+        "gtksourceview5",
     ],
-    extras_require={
-        "syntax": [
-            "gtksourceview5",
-        ],
-    },
     entry_points={
         "console_scripts": [
             "mfatext=mfatext.main:main",
