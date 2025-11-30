@@ -126,6 +126,16 @@ def main() -> int:
     Returns:
         Exit code
     """
+    # Initialize GtkSourceView library (required per official docs)
+    try:
+        import gi
+        gi.require_version('GtkSource', '5')
+        from gi.repository import GtkSource
+        GtkSource.init()
+        logger.debug("GtkSource initialized successfully")
+    except (ImportError, ValueError, AttributeError) as e:
+        logger.warning(f"Failed to initialize GtkSource: {e}")
+    
     # Set up logging with DEBUG level for detailed debugging
     logging.basicConfig(
         level=logging.DEBUG,

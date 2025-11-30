@@ -43,17 +43,21 @@ class EditorBuffer:
         self._file_modified_time: float = 0.0
         self._is_loading = False
         
-        # Create buffer
+        # Create buffer according to GtkSourceView 5 API
+        # Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
         if _HAS_GTKSOURCE:
             # Detect language from file extension
             language = None
             if file_path:
+                # Official API: LanguageManager.get_default() and guess_language()
                 language_manager = GtkSource.LanguageManager.get_default()
                 language = language_manager.guess_language(file_path.name, None)
             
             if language:
+                # Official API: Buffer.new_with_language()
                 self._buffer = GtkSource.Buffer.new_with_language(language)
             else:
+                # Official API: Buffer() constructor
                 self._buffer = GtkSource.Buffer()
         else:
             self._buffer = Gtk.TextBuffer()
@@ -193,67 +197,55 @@ class EditorBuffer:
             return
     
     def can_undo(self) -> bool:
-        """Check if undo is available."""
+        """Check if undo is available.
+        
+        According to GtkSourceView 5 API, can-undo is a property, not a method.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         if _HAS_GTKSOURCE and isinstance(self._buffer, GtkSource.Buffer):
             try:
-                # Try get_property first (GtkSource properties)
                 return self._buffer.get_property('can-undo')
             except (AttributeError, TypeError):
-                try:
-                    # Fallback to method call
-                    return self._buffer.can_undo()
-                except (AttributeError, TypeError):
-                    pass
+                pass
         return False
     
     def can_redo(self) -> bool:
-        """Check if redo is available."""
+        """Check if redo is available.
+        
+        According to GtkSourceView 5 API, can-redo is a property, not a method.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         if _HAS_GTKSOURCE and isinstance(self._buffer, GtkSource.Buffer):
             try:
-                # Try get_property first (GtkSource properties)
                 return self._buffer.get_property('can-redo')
             except (AttributeError, TypeError):
-                try:
-                    # Fallback to method call
-                    return self._buffer.can_redo()
-                except (AttributeError, TypeError):
-                    pass
+                pass
         return False
     
     def undo(self) -> None:
-        """Undo the last action."""
+        """Undo the last action.
+        
+        According to GtkSourceView 5 API documentation.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         if _HAS_GTKSOURCE and isinstance(self._buffer, GtkSource.Buffer):
             try:
-                # Check if undo is available
-                can_undo = False
-                try:
-                    can_undo = self._buffer.get_property('can-undo')
-                except (AttributeError, TypeError):
-                    try:
-                        can_undo = self._buffer.can_undo()
-                    except (AttributeError, TypeError):
-                        pass
-                
-                if can_undo:
+                # Check if undo is available using the can-undo property
+                if self._buffer.get_property('can-undo'):
                     self._buffer.undo()
             except (AttributeError, TypeError):
                 pass
     
     def redo(self) -> None:
-        """Redo the last undone action."""
+        """Redo the last undone action.
+        
+        According to GtkSourceView 5 API documentation.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         if _HAS_GTKSOURCE and isinstance(self._buffer, GtkSource.Buffer):
             try:
-                # Check if redo is available
-                can_redo = False
-                try:
-                    can_redo = self._buffer.get_property('can-redo')
-                except (AttributeError, TypeError):
-                    try:
-                        can_redo = self._buffer.can_redo()
-                    except (AttributeError, TypeError):
-                        pass
-                
-                if can_redo:
+                # Check if redo is available using the can-redo property
+                if self._buffer.get_property('can-redo'):
                     self._buffer.redo()
             except (AttributeError, TypeError):
                 pass

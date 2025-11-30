@@ -195,9 +195,12 @@ class MfaTextWindow(Adw.Window):
         scrolled.set_vexpand(True)
         scrolled.set_hexpand(True)
         
-        # Create editor widget
+        # Create editor widget according to GtkSourceView 5 API
+        # Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.View.html
         if _HAS_GTKSOURCE:
+            # Official API: View() constructor
             self._source_view = GtkSource.View()
+            # Official API methods for View configuration
             self._source_view.set_show_line_numbers(True)
             self._source_view.set_highlight_current_line(False)
             self._source_view.set_auto_indent(True)
@@ -503,27 +506,21 @@ class MfaTextWindow(Adw.Window):
         GLib.idle_add(self._update_undo_redo_states)
     
     def _on_undo_state_changed(self, buffer: GtkSource.Buffer, pspec: GObject.ParamSpec) -> None:
-        """Handle undo state changes."""
+        """Handle undo state changes.
+        
+        According to GtkSourceView 5 API, can-undo is a property.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         logger.debug(f"_on_undo_state_changed: called, pspec.name = {pspec.name if pspec else 'None'}")
         if hasattr(self, '_undo_button'):
             logger.debug("_on_undo_state_changed: undo button exists")
             try:
                 if isinstance(buffer, GtkSource.Buffer):
-                    # Try get_property first (GtkSource properties)
-                    try:
-                        can_undo = buffer.get_property('can-undo')
-                        logger.debug(f"_on_undo_state_changed: get_property('can-undo') = {can_undo}")
-                        self._undo_button.set_sensitive(can_undo)
-                        logger.debug(f"_on_undo_state_changed: undo button sensitive set to {can_undo}")
-                    except (AttributeError, TypeError):
-                        # Fallback to method call
-                        try:
-                            can_undo = buffer.can_undo()
-                            logger.debug(f"_on_undo_state_changed: can_undo() = {can_undo}")
-                            self._undo_button.set_sensitive(can_undo)
-                            logger.debug(f"_on_undo_state_changed: undo button sensitive set to {can_undo}")
-                        except (AttributeError, TypeError) as e:
-                            logger.debug(f"_on_undo_state_changed: cannot get can_undo: {e}")
+                    # Use get_property for can-undo (GtkSourceView 5 API)
+                    can_undo = buffer.get_property('can-undo')
+                    logger.debug(f"_on_undo_state_changed: get_property('can-undo') = {can_undo}")
+                    self._undo_button.set_sensitive(can_undo)
+                    logger.debug(f"_on_undo_state_changed: undo button sensitive set to {can_undo}")
                 else:
                     logger.debug(f"_on_undo_state_changed: buffer is not GtkSource.Buffer. type={type(buffer)}")
             except Exception as e:
@@ -532,27 +529,21 @@ class MfaTextWindow(Adw.Window):
             logger.debug("_on_undo_state_changed: undo button does not exist")
     
     def _on_redo_state_changed(self, buffer: GtkSource.Buffer, pspec: GObject.ParamSpec) -> None:
-        """Handle redo state changes."""
+        """Handle redo state changes.
+        
+        According to GtkSourceView 5 API, can-redo is a property.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         logger.debug(f"_on_redo_state_changed: called, pspec.name = {pspec.name if pspec else 'None'}")
         if hasattr(self, '_redo_button'):
             logger.debug("_on_redo_state_changed: redo button exists")
             try:
                 if isinstance(buffer, GtkSource.Buffer):
-                    # Try get_property first (GtkSource properties)
-                    try:
-                        can_redo = buffer.get_property('can-redo')
-                        logger.debug(f"_on_redo_state_changed: get_property('can-redo') = {can_redo}")
-                        self._redo_button.set_sensitive(can_redo)
-                        logger.debug(f"_on_redo_state_changed: redo button sensitive set to {can_redo}")
-                    except (AttributeError, TypeError):
-                        # Fallback to method call
-                        try:
-                            can_redo = buffer.can_redo()
-                            logger.debug(f"_on_redo_state_changed: can_redo() = {can_redo}")
-                            self._redo_button.set_sensitive(can_redo)
-                            logger.debug(f"_on_redo_state_changed: redo button sensitive set to {can_redo}")
-                        except (AttributeError, TypeError) as e:
-                            logger.debug(f"_on_redo_state_changed: cannot get can_redo: {e}")
+                    # Use get_property for can-redo (GtkSourceView 5 API)
+                    can_redo = buffer.get_property('can-redo')
+                    logger.debug(f"_on_redo_state_changed: get_property('can-redo') = {can_redo}")
+                    self._redo_button.set_sensitive(can_redo)
+                    logger.debug(f"_on_redo_state_changed: redo button sensitive set to {can_redo}")
                 else:
                     logger.debug(f"_on_redo_state_changed: buffer is not GtkSource.Buffer. type={type(buffer)}")
             except Exception as e:
@@ -585,7 +576,11 @@ class MfaTextWindow(Adw.Window):
             logger.debug("_on_redo_clicked: no editor buffer")
     
     def _update_undo_redo_states(self) -> None:
-        """Update undo/redo button states."""
+        """Update undo/redo button states.
+        
+        According to GtkSourceView 5 API, can-undo and can-redo are properties.
+        Reference: https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.Buffer.html
+        """
         logger.debug("_update_undo_redo_states: called")
         if not self._editor_buffer:
             logger.debug("_update_undo_redo_states: no editor buffer")
@@ -598,36 +593,17 @@ class MfaTextWindow(Adw.Window):
         if _HAS_GTKSOURCE and isinstance(buffer, GtkSource.Buffer):
             logger.debug("_update_undo_redo_states: buffer is GtkSource.Buffer")
             try:
-                # Try get_property first (GtkSource properties)
-                try:
-                    can_undo = buffer.get_property('can-undo')
-                    logger.debug(f"_update_undo_redo_states: get_property('can-undo') = {can_undo}")
-                    self._undo_button.set_sensitive(can_undo)
-                    logger.debug(f"_update_undo_redo_states: undo button sensitive set to {can_undo}")
-                except (AttributeError, TypeError):
-                    # Fallback to method call if property doesn't work
-                    try:
-                        can_undo = buffer.can_undo()
-                        logger.debug(f"_update_undo_redo_states: can_undo() = {can_undo}")
-                        self._undo_button.set_sensitive(can_undo)
-                        logger.debug(f"_update_undo_redo_states: undo button sensitive set to {can_undo}")
-                    except (AttributeError, TypeError) as e:
-                        logger.debug(f"_update_undo_redo_states: cannot get can_undo: {e}")
+                # Use get_property for can-undo (GtkSourceView 5 API)
+                can_undo = buffer.get_property('can-undo')
+                logger.debug(f"_update_undo_redo_states: get_property('can-undo') = {can_undo}")
+                self._undo_button.set_sensitive(can_undo)
+                logger.debug(f"_update_undo_redo_states: undo button sensitive set to {can_undo}")
                 
-                try:
-                    can_redo = buffer.get_property('can-redo')
-                    logger.debug(f"_update_undo_redo_states: get_property('can-redo') = {can_redo}")
-                    self._redo_button.set_sensitive(can_redo)
-                    logger.debug(f"_update_undo_redo_states: redo button sensitive set to {can_redo}")
-                except (AttributeError, TypeError):
-                    # Fallback to method call if property doesn't work
-                    try:
-                        can_redo = buffer.can_redo()
-                        logger.debug(f"_update_undo_redo_states: can_redo() = {can_redo}")
-                        self._redo_button.set_sensitive(can_redo)
-                        logger.debug(f"_update_undo_redo_states: redo button sensitive set to {can_redo}")
-                    except (AttributeError, TypeError) as e:
-                        logger.debug(f"_update_undo_redo_states: cannot get can_redo: {e}")
+                # Use get_property for can-redo (GtkSourceView 5 API)
+                can_redo = buffer.get_property('can-redo')
+                logger.debug(f"_update_undo_redo_states: get_property('can-redo') = {can_redo}")
+                self._redo_button.set_sensitive(can_redo)
+                logger.debug(f"_update_undo_redo_states: redo button sensitive set to {can_redo}")
             except Exception as e:
                 logger.error(f"_update_undo_redo_states: exception: {e}", exc_info=True)
         else:

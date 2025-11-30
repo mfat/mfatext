@@ -30,12 +30,16 @@ class SearchContext:
     def __init__(self, buffer: Gtk.TextBuffer) -> None:
         """Initialize the search context.
         
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchContext.html
+        
         Args:
             buffer: The text buffer to search in
         """
         self._buffer = buffer
         
         if _HAS_GTKSOURCE and isinstance(buffer, GtkSource.Buffer):
+            # Official API: SearchSettings() and SearchContext.new()
             self._search_settings = GtkSource.SearchSettings()
             self._search_context = GtkSource.SearchContext.new(buffer, self._search_settings)
             self._search_context.set_highlight(True)
@@ -46,6 +50,9 @@ class SearchContext:
     def set_search_text(self, text: str, case_sensitive: bool = False, wrap_around: bool = True) -> None:
         """Set the search text.
         
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchSettings.html
+        
         Args:
             text: Text to search for
             case_sensitive: Whether search should be case sensitive
@@ -54,6 +61,7 @@ class SearchContext:
         if not _HAS_GTKSOURCE or not self._search_settings:
             return
         
+        # Official API methods
         if text:
             self._search_settings.set_search_text(text)
         else:
@@ -64,6 +72,10 @@ class SearchContext:
     
     def find_next(self, start_iter: Optional[Gtk.TextIter] = None) -> tuple[bool, Optional[Gtk.TextIter], Optional[Gtk.TextIter], bool]:
         """Find the next occurrence of the search text.
+        
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchContext.html
+        The forward() method returns (found, match_start, match_end, wrapped)
         
         Args:
             start_iter: Optional iterator to start search from (uses cursor if None)
@@ -93,11 +105,16 @@ class SearchContext:
                 insert_mark = self._buffer.get_insert()
                 start_iter = self._buffer.get_iter_at_mark(insert_mark)
         
+        # Official API: forward(iter) -> (bool, TextIter, TextIter, bool)
         ok, match_start, match_end, wrapped = self._search_context.forward(start_iter)
         return (ok, match_start, match_end, wrapped)
     
     def find_previous(self, start_iter: Optional[Gtk.TextIter] = None) -> tuple[bool, Optional[Gtk.TextIter], Optional[Gtk.TextIter], bool]:
         """Find the previous occurrence of the search text.
+        
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchContext.html
+        The backward() method returns (found, match_start, match_end, wrapped)
         
         Args:
             start_iter: Optional iterator to start search from (uses cursor if None)
@@ -116,11 +133,15 @@ class SearchContext:
             insert_mark = self._buffer.get_insert()
             start_iter = self._buffer.get_iter_at_mark(insert_mark)
         
+        # Official API: backward(iter) -> (bool, TextIter, TextIter, bool)
         ok, match_start, match_end, wrapped = self._search_context.backward(start_iter)
         return (ok, match_start, match_end, wrapped)
     
     def replace(self, match_start: Gtk.TextIter, match_end: Gtk.TextIter, replace_text: str) -> bool:
         """Replace a match with new text.
+        
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchContext.html
         
         Args:
             match_start: Iterator at start of match
@@ -133,10 +154,14 @@ class SearchContext:
         if not _HAS_GTKSOURCE or not self._search_context:
             return False
         
+        # Official API: replace(match_start, match_end, replace, replace_length) -> bool
         return self._search_context.replace(match_start, match_end, replace_text, len(replace_text))
     
     def replace_all(self, replace_text: str) -> None:
         """Replace all occurrences of the search text.
+        
+        According to GtkSourceView 5 API:
+        https://gnome.pages.gitlab.gnome.org/gtksourceview/gtksourceview5/class.SearchContext.html
         
         Args:
             replace_text: Text to replace with
@@ -144,5 +169,6 @@ class SearchContext:
         if not _HAS_GTKSOURCE or not self._search_context:
             return
         
+        # Official API: replace_all(replace, replace_length) -> int
         self._search_context.replace_all(replace_text, len(replace_text))
 
