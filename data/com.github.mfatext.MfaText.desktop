@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=MfaText
+Name[en]=MfaText
+Comment=A feature-rich text editor for GNOME
+Comment[en]=A feature-rich text editor for GNOME
+Exec=mfatext %F
+Icon=text-editor
+Terminal=false
+Type=Application
+Categories=Utility;TextEditor;
+MimeType=text/plain;text/x-chdr;text/x-csrc;text/x-c++hdr;text/x-c++src;text/x-java;text/x-dsrc;text/x-pascal;text/x-perl;text/x-python;application/x-shellscript;application/xml;text/xml;
+StartupNotify=true
+Keywords=text;editor;code;programming;
+

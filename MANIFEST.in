@@ -1,0 +1,11 @@
+include README.md
+include function_reference.md
+include LICENSE
+include pyproject.toml
+include setup.py
+recursive-include data *.desktop *.metainfo.xml
+recursive-include flatpak *.yml
+recursive-include debian *
+include PKGBUILD
+include mfatext.spec
+

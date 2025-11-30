@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mfatext"
+version = "1.0.0"
+description = "A feature-rich text editor for GNOME"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "MfaText Contributors", email = "mfatext@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Text Editors",
+]
+dependencies = [
+    "PyGObject>=3.42.0",
+]
+
+[project.optional-dependencies]
+syntax = ["gtksourceview5"]
+
+[project.scripts]
+mfatext = "mfatext.main:main"
+
+[tool.setuptools]
+packages = ["mfatext"]
+
+[tool.setuptools.package-data]
+mfatext = ["*.ui", "*.glade"]
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.mfatext.MfaText</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>MfaText</name>
+  <summary>A feature-rich text editor for GNOME</summary>
+  <description>
+    <p>
+      MfaText is a feature-rich text editor for GNOME that can be used
+      both as a standalone application and as a library module for integration
+      into PyGObject applications.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Syntax highlighting for many programming languages</li>
+      <li>Search and replace functionality</li>
+      <li>Undo/redo support</li>
+      <li>Line numbers</li>
+      <li>Word wrap</li>
+      <li>Auto-indentation</li>
+      <li>File monitoring for external changes</li>
+    </ul>
+  </description>
+  <url type="homepage">https://github.com/mfatext/mfatext</url>
+  <url type="bugtracker">https://github.com/mfatext/mfatext/issues</url>
+  <releases>
+    <release version="1.0.0" date="2024-01-01">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+</component>
+
