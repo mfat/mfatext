@@ -10,13 +10,19 @@ from gi.repository import Adw, Gtk, Gdk
 def show_about_dialog(parent: Adw.Window) -> None:
     """Show the about dialog following GNOME HIG.
     
+    According to LibAdwaita 1.7 API:
+    https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.7/class.AboutDialog.html
+    
     Args:
         parent: Parent window for the dialog
     """
-    about = Adw.AboutWindow()
-    about.set_transient_for(parent)
+    # Use Adw.AboutDialog (available since LibAdwaita 1.5)
+    # Reference: https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.7/class.AboutDialog.html
+    about = Adw.AboutDialog()
+    
+    # Set application properties according to official API
     about.set_application_name("MfaText")
-    about.set_application_icon("text-editor")
+    about.set_application_icon("text-editor")  # Using text-editor icon until mfatext icon is available
     about.set_version("1.0.0")
     about.set_developer_name("MfaText Contributors")
     about.set_license_type(Gtk.License.GPL_3_0)
@@ -26,7 +32,9 @@ def show_about_dialog(parent: Adw.Window) -> None:
     about.set_developers(["MfaText Contributors"])
     about.set_artists(["GNOME Design Team"])
     about.set_comments("A feature-rich text editor for GNOME")
-    about.present()
+    
+    # Present the dialog (AboutDialog is a Dialog, not a Window)
+    about.present(parent)
 
 
 def show_help_dialog(parent: Adw.Window) -> None:

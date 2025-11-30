@@ -53,9 +53,15 @@ def create_window_menu() -> Gio.Menu:
     view_section.append("Word Wrap", "win.word-wrap")
     view_section.append("Line Numbers", "win.line-numbers")
     
+    # Help section (includes About)
+    help_section = Gio.Menu()
+    help_section.append("Help", "app.help")
+    help_section.append("About", "app.about")
+    
     menu.append_section(None, file_section)
     menu.append_section(None, edit_section)
     menu.append_section(None, view_section)
+    menu.append_section(None, help_section)
     
     return menu
 
